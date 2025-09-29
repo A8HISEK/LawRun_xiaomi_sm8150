@@ -1,3 +1,4 @@
+```yaml
 name: Build Kernel (Raphael)
 
 on:
@@ -63,10 +64,11 @@ jobs:
           zip -r9 $GITHUB_WORKSPACE/raphael-kernel.zip *
 
       - name: Upload kernel artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: raphael-kernel
           path: |
             out/arch/arm64/boot/Image*
             out/arch/arm64/boot/dts/**/*.dtb
             raphael-kernel.zip
+```
