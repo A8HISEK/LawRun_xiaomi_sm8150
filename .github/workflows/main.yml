@@ -30,13 +30,14 @@ jobs:
             git build-essential bc bison flex libssl-dev \
             libncurses5-dev curl zip unzip ccache python3
 
-      - name: Download Clang toolchain
+      - name: Download Proton Clang toolchain
         run: |
           mkdir -p $GITHUB_WORKSPACE/toolchain
           cd $GITHUB_WORKSPACE/toolchain
-          wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r487747c.tar.gz -O clang.tar.gz
-          tar -xf clang.tar.gz
-          echo "CLANG_PATH=$GITHUB_WORKSPACE/toolchain/bin" >> $GITHUB_ENV
+          wget https://github.com/kdrag0n/proton-clang/archive/refs/heads/master.tar.gz -O proton-clang.tar.gz
+          tar -xf proton-clang.tar.gz
+          mv proton-clang-master proton-clang
+          echo "CLANG_PATH=$GITHUB_WORKSPACE/toolchain/proton-clang/bin" >> $GITHUB_ENV
 
       - name: Download GCC cross-compiler
         run: |
@@ -68,5 +69,3 @@ jobs:
           name: raphael-kernel
           path: |
             out/arch/arm64/boot/Image*
-            out/arch/arm64/boot/dts/**/*.dtb
-            raphael-kernel.zip
