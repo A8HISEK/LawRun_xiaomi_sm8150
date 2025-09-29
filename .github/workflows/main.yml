@@ -1,4 +1,3 @@
-```yaml
 name: Build Kernel (Raphael)
 
 on:
@@ -71,4 +70,3 @@ jobs:
             out/arch/arm64/boot/Image*
             out/arch/arm64/boot/dts/**/*.dtb
             raphael-kernel.zip
-```
