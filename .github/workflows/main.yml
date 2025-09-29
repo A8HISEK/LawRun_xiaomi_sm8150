@@ -4,8 +4,8 @@ on:
   push:           # runs on any branch
     branches:
       - "**"
-  pull_request:   # optional, remove if not needed
-  workflow_dispatch:  # allows manual trigger from Actions tab
+  pull_request:   # optional
+  workflow_dispatch:  # manual trigger
 
 jobs:
   build:
@@ -39,18 +39,20 @@ jobs:
           mv proton-clang-master proton-clang
           echo "CLANG_PATH=$GITHUB_WORKSPACE/toolchain/proton-clang/bin" >> $GITHUB_ENV
 
-      - name: Download GCC cross-compiler
+      - name: Download GCC cross-compiler tarballs
         run: |
           mkdir -p $GITHUB_WORKSPACE/gcc
           cd $GITHUB_WORKSPACE/gcc
-          git clone --depth=1 https://github.com/baalajimaestro/aarch64-linux-android-4.9 aarch64
-          git clone --depth=1 https://github.com/baalajimaestro/arm-linux-androideabi-4.9 arm
+          wget https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/refs/heads/master.tar.gz -O aarch64-gcc.tar.gz
+          tar -xf aarch64-gcc.tar.gz
+          wget https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/+archive/refs/heads/master.tar.gz -O arm-gcc.tar.gz
+          tar -xf arm-gcc.tar.gz
 
       - name: Build kernel
         run: |
           export PATH=$CLANG_PATH:$PATH
-          export CROSS_COMPILE=$GITHUB_WORKSPACE/gcc/aarch64/bin/aarch64-linux-android-
-          export CROSS_COMPILE_ARM32=$GITHUB_WORKSPACE/gcc/arm/bin/arm-linux-androideabi-
+          export CROSS_COMPILE=$GITHUB_WORKSPACE/gcc/aarch64-linux-android-4.9/bin/aarch64-linux-android-
+          export CROSS_COMPILE_ARM32=$GITHUB_WORKSPACE/gcc/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-
           export CC=clang
 
           make O=$OUT_DIR raphael_defconfig
@@ -69,3 +71,5 @@ jobs:
           name: raphael-kernel
           path: |
             out/arch/arm64/boot/Image*
+            out/arch/arm64/boot/dts/**/*.dtb
+            raphael-kernel.zip
